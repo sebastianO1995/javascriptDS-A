@@ -1,17 +1,18 @@
-/* Min-Heap: Where the value of the root node is greater than or equal to either of its children.
+/*Where the value of the root node is less than or equal to either of its children
 
 important equations for using an array
 
 left child: index * 2 + 1
 right child: index * 2 + 2
 parent: floor of (index-1) /2
+
 */
-class maxHeap {
+
+class minHeap{
     constructor(){
-        this.heap = [];
+        this.heap = []; 
+        
     }
-    
-    //helper methods
     getLeftChildIndex(parentIndex){return parentIndex * 2 +1;}
     getRightChildIndex(parentIndex){return parentIndex * 2 + 2;}
     getParentIndex(childIndex){return Math.floor((childIndex-1)/2); } 
@@ -42,91 +43,95 @@ class maxHeap {
             console.log(`[${i}] - ${this.heap[i]}`);
         }
     }
+        
     insert(data){
-        //add the new item to the end
+        
+        //push data to end of array then heapify
         this.heap.push(data);
         
-        //after we have a root node
+        //there are atleast two elements
         if(this.heap.length >1){
-            
-            //grab index of last element(the one that was just added)
+            //take the element we just added and compare it with its parent
             let index = this.heap.length - 1;
-            while(this.parent(index) < this.heap[index]){ //is the parent less than the child
+            while(this.parent(index) > this.heap[index]){ //is the parent greater than the child
                 
-                //while the current items parent is smaller than current item
+                
                 this.swap(this.getParentIndex(index),index); //swap parent with child
                 index = this.getParentIndex(index);
             }
         }
-    }
-    
-    delete(){
-        //removes root element 
-        //if empty
-        if(this.heap.length ===0){
-            console.log('Empty heap, cannot remove');
-        }
-        //if only one element
-        else if(this.heap.length === 1){
-            
-            return this.heap.pop();
-            
-        }
-        else{//more than one element 
-            //console.log(this.heap)
-        let largest = this.heap[0]; 
-            //console.log(`popping ${largest}`)
-        this.heap[0] = this.heap.pop(); 
-        let index = 0; 
         
-        while(this.heap[index] <= this.leftChild(index) || this.heap[index] <= this.rightChild(index) ){
+    }
+    remove(){
+        
+        if(this.isEmpty()){ //if heap is empty
+            console.log('Empty Heap');
+        }
+        else if(this.heap.length ===1){
+            //if there is one element
+            return this.heap.pop();
+            }
+        else{
+            //more than one element in the heap
+            let smallest = this.heap[0]; //collect the smallest
+            this.heap[0] = this.heap.pop();//swap with last element
+            //heapify down
+            let index = 0;
+            while(this.heap[index] >= this.leftChild(index) || this.heap[index] >= this.rightChild(index) ){
             //console.log('Before: ' + this.heap)
-         //the current value is less than the children
-            //find the largest of the children
-            if(this.leftChild(index) >= this.rightChild(index) || this.rightChild(index) === undefined){
-                //if left child is bigger than right. swap left with parent
+         //the current value is greater than the children
+            //find the smallest of the children
+            if(this.leftChild(index) <= this.rightChild(index) || this.rightChild(index) === undefined){
+                //if left child is less than right. swap left with parent
                 this.swap(index, this.getLeftChildIndex(index));
                 index = this.getLeftChildIndex(index);
             }else{
-                //right child is bigger than left child
+                //right child is less than left child
                 //swap parent with right child
-                this.swap(index, this.getRightChildIndex(index) );
+                this.swap(index, this.getRightChildIndex(index));
                 index = this.getRightChildIndex(index);
             }
         }
-        
-        return largest; 
-        
+            return smallest;
+            
         }
         
     }
-    
-    getMax(){
-        return this.heap[0];
-    }
-    
     sort(order){
         let sorted = []
-        while(this.heap.length!=0){
-         sorted.push(this.delete())
-        }
         
-        if(order ==='asc'){
+        while(this.heap.length!=0){
+         sorted.push(this.remove())
+        }
+       
+        
+        if(order ==='desc'){
+           
             return sorted.reverse();
         }
-        else if(order === 'desc'){return sorted}
-        else {console.log('specify order')}
+        else if(order === 'asc'){
+            
+            return sorted}
+        else {
+              console.log('specify order');}
     }
 }
 
-//test
 
-let maxH = new maxHeap();
 
-for(let i =0;i < 10; i++){
-    maxH.insert(i);
-}
 
-maxH.print();
-//sort
-console.log(`\n Sorted: ${maxH.sort('desc')} `)
+
+//TEST
+
+let minH = new minHeap();
+minH.insert(44);
+minH.insert(21);
+minH.insert(5);
+minH.insert(89);
+minH.insert(33);
+minH.insert(104);
+minH.insert(2);
+minH.print()
+console.log(`\n Sorted: ${minH.sort('asc')} `)
+
+minH.print();
